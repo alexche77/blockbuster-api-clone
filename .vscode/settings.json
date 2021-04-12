@@ -1,0 +1,7 @@
+{
+    "python.formatting.provider": "black",
+    "python.pythonPath": "/home/alvaro/.virtualenvs/blockbuster-clone/bin/python",
+    "python.linting.pylintArgs": [
+        "--django-settings-module=config.settings",
+    ]
+}
