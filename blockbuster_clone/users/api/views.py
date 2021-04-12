@@ -5,6 +5,7 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateMode
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from .permissions import IsSelf, IsStaff
 from .serializers import UserSerializer
 
 User = get_user_model()
@@ -12,11 +13,9 @@ User = get_user_model()
 
 class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = UserSerializer
+    permission_classes = [IsSelf, IsStaff]
     queryset = User.objects.all()
     lookup_field = "username"
-
-    def get_queryset(self, *args, **kwargs):
-        return self.queryset.filter(id=self.request.user.id)
 
     @action(detail=False, methods=["GET"])
     def me(self, request):

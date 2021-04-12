@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db.models import CharField
-from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
 
@@ -12,11 +12,10 @@ class User(AbstractUser):
     first_name = None  # type: ignore
     last_name = None  # type: ignore
 
-    def get_absolute_url(self):
-        """Get url for user's detail view.
+    @cached_property
+    def is_staff_member(self):
+        return self.groups.filter(name=["Admins", "Staff"]).exists()
 
-        Returns:
-            str: URL for user detail.
-
-        """
-        return reverse("users:detail", kwargs={"username": self.username})
+    @cached_property
+    def is_admin_member(self):
+        return self.groups.filter(name="Admins").exists()
