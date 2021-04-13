@@ -10,6 +10,7 @@ class MovieSerializer(serializers.Serializer):
         validators=[UniqueValidator(queryset=Movie.objects.all())],
     )
     info = serializers.JSONField(read_only=True)
+    sales = serializers.IntegerField(default=0)
 
     def create(self, validated_data):
         return Movie.objects.create(**validated_data)
