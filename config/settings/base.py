@@ -79,6 +79,7 @@ LOCAL_APPS = [
     "blockbuster_clone.users.apps.UsersConfig",
     # Your stuff: custom apps go here
     "blockbuster_clone.movies.apps.MoviesConfig",
+    "blockbuster_clone.store.apps.StoreConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
