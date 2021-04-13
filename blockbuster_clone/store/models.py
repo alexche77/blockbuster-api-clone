@@ -1,6 +1,7 @@
-from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator
 from decimal import Decimal
+
+from django.core.validators import MinValueValidator
+from django.db import models
 
 from blockbuster_clone.movies.models import Movie
 from blockbuster_clone.users.models import User
@@ -19,6 +20,8 @@ class Movement(models.Model):
     movement_type = models.IntegerField(choices=MovementType.choices)
     movie = models.ForeignKey(Movie, on_delete=models.PROTECT)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
+    quantity = models.IntegerField(default=1)
+    comments = models.CharField(max_length=255, blank=False)
     price = models.DecimalField(
         max_digits=5,
         decimal_places=2,
@@ -28,45 +31,17 @@ class Movement(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        abstract = True
 
-
-class Sale(Movement):
-    def __init__(self, *args, **kwargs):
-        self._meta.get_field("movement_type").default = 1
-        super(RentRequest, self).__init__(*args, **kwargs)
-
-
-class RentRequest(Movement):
-    def __init__(self, *args, **kwargs):
-        self._meta.get_field("movement_type").default = 2
-        super(RentRequest, self).__init__(*args, **kwargs)
-
-
-class RentReturn(Movement):
-    def __init__(self, *args, **kwargs):
-        self._meta.get_field("movement_type").default = 3
-        super(RentReturn, self).__init__(*args, **kwargs)
-
-
-class DefectiveReturn(Movement):
-    reason = models.CharField(max_length=255, blank=False)
-
-    def __init__(self, *args, **kwargs):
-        self._meta.get_field("movement_type").default = 4
-        super(DefectiveReturn, self).__init__(*args, **kwargs)
-
-
-class Purchase(Movement):
-    def __init__(self, *args, **kwargs):
-        self._meta.get_field("movement_type").default = 5
-        super(Purchase, self).__init__(*args, **kwargs)
-
-
-class InventoryAdjustment(Movement):
-    reason = models.CharField(max_length=255, blank=False)
-
-    def __init__(self, *args, **kwargs):
-        self._meta.get_field("movement_type").default = 5
-        super(Purchase, self).__init__(*args, **kwargs)
+class PurchaseOrder(models.Model):
+    # class PurchaseOrderState(models.IntegerChoices):
+    #     PENDING_REVIEW = 1
+    #     REJECTED = 2
+    #     ACCEPTED = 3
+    #     DEFECTIVE_RETURN = 4
+    #     PURCHASE = 5
+    #     ADJUSTMENT = 6
+    created_by = models.ForeignKey(User, on_delete=models.PROTECT)
+    movie_purchase = models.ManyToManyField(Movement)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    # reviewed_by = models.ForeignKey(User, on_delete=models.PROTECT)
