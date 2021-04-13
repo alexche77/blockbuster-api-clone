@@ -4,24 +4,42 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
 from blockbuster_clone.movies.serializers import MovieSerializer
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
+from blockbuster_clone.movies.permissions import IsStaff
+from rest_framework.mixins import (
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    CreateModelMixin,
+)
 
 from rest_framework.viewsets import GenericViewSet
 
-class MovieViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, CreateModelMixin, GenericViewSet):
+from structlog import  get_logger
+
+logger = get_logger()
+
+class MovieViewSet(
+    RetrieveModelMixin,
+    ListModelMixin,
+    UpdateModelMixin,
+    CreateModelMixin,
+    GenericViewSet,
+):
     serializer_class = MovieSerializer
-    queryset = Movie.objects.all()
-    lookup_field = 'imdb_id'
+    queryset = Movie.objects.all()    
+    lookup_field = "imdb_id"
 
-# class MovieList(APIView):
-#     def get(self, request, format=None):
-#         movies = Movie.objects.all()
-#         serializer = MovieSerializer(movies, many=True)
-#         return Response(serializer.data)
+    def get_queryset(self):
+        logger.debug('MoviesList', data={'is_staff_member':self.request.user.is_staff_member})
+        if self.request.user.is_staff_member:
+            return Movie.objects.all()
+        else:
+            return Movie.objects.filter(info__Error__isnull=True)
+    
 
-#     def post(self, request, format=None):
-#         serializer = MovieSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not self.request.user.is_staff_member and (instance.info is None or 'Error' in instance.info):
+            raise Http404()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)

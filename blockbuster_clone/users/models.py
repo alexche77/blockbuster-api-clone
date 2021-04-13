@@ -14,7 +14,7 @@ class User(AbstractUser):
 
     @cached_property
     def is_staff_member(self):
-        return self.groups.filter(name=["Admins", "Staff"]).exists()
+        return self.groups.filter(name="Staff").exists() or self.is_admin_member
 
     @cached_property
     def is_admin_member(self):
