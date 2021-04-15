@@ -9,7 +9,7 @@ const ProfileScreen = ({ history }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [message, setMessage] = useState(null);
   const dispatch = useDispatch();
 
@@ -26,10 +26,10 @@ const ProfileScreen = ({ history }) => {
     if (!userInfo) {
       history.push("/login");
     } else {
-      if (!userInfo.name) {
-        dispatch(getUserDetail("profile"));
+      if (!userInfo.username) {
+        dispatch(getUserDetail("me"));
       } else {
-        setName(userInfo.name);
+        setUsername(userInfo.username);
         setEmail(userInfo.email);
       }
     }
@@ -42,7 +42,7 @@ const ProfileScreen = ({ history }) => {
     } else {
       console.log("Updating profile");
       setMessage(null);
-      dispatch(updateUserProfile({ id: user._id, name, email, password }));
+      dispatch(updateUserProfile({ id: user._id, username, email, password }));
     }
   };
 
@@ -55,13 +55,13 @@ const ProfileScreen = ({ history }) => {
         {success && <Message variant="success"> Profile updated</Message>}
         {error && <Message variant="danger"> {error}</Message>}
         <Form onSubmit={submitHandler}>
-          <Form.Group controlId="name">
+          <Form.Group controlId="username">
             <Form.Label>Name</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             ></Form.Control>
           </Form.Group>
           <Form.Group controlId="email">

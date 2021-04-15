@@ -15,6 +15,9 @@ class MovieSerializer(serializers.Serializer):
         validators=[UniqueValidator(queryset=Movie.objects.all())],
     )
     info = serializers.JSONField(read_only=True)
+    stock = serializers.IntegerField(default=0, read_only=True)
+    final_price = serializers.IntegerField(default=0, read_only=True)
+    rent_price = serializers.IntegerField(default=0, read_only=True)
 
     def create(self, validated_data):
         return Movie.objects.create(**validated_data)
@@ -30,18 +33,17 @@ class MovieSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+    class Meta:
+        fields = "__all__"
+
 
 class MovieDetailSerializer(MovieSerializer):
     sales = serializers.IntegerField(default=0, read_only=True)
-    stock = serializers.IntegerField(default=0, read_only=True)
     rents = serializers.IntegerField(default=0, read_only=True)
     rent_returns = serializers.IntegerField(default=0, read_only=True)
     defective_returns = serializers.IntegerField(default=0, read_only=True)
     purchases = serializers.ReadOnlyField()
     adjustments = serializers.IntegerField(default=0, read_only=True)
-    final_price = serializers.DecimalField(
-        default=Decimal("0.00"), max_digits=5, decimal_places=2, read_only=True
-    )
     base_price = serializers.DecimalField(
         default=Decimal("0.00"), max_digits=5, decimal_places=2, read_only=True
     )

@@ -7,4 +7,4 @@ class IsStaffOrSelf(permissions.BasePermission):
             return True
         if obj.pk == request.user.pk:
             return True
-        return request.user.is_staff_member and not obj.is_admin_member
+        return request.user.is_admin_member and not obj.is_admin_member

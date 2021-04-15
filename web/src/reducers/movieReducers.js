@@ -21,7 +21,7 @@ export const movieListReducer = (state = { movies: [] }, action) => {
 };
 
 export const movieDetailReducer = (
-  state = { movie: { reviews: [] } },
+  state = { movie: {info:{Ratings: []} } },
   action
 ) => {
   switch (action.type) {

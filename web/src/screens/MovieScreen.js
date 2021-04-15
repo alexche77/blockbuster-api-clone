@@ -11,10 +11,7 @@ import {
   Form,
 } from "react-bootstrap";
 import Rating from "../components/Rating";
-import {
-  listMovieDetails,
-  cleanUpMoviesState,
-} from "../actions/movieActions";
+import { listMovieDetails, cleanUpMoviesState } from "../actions/movieActions";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
@@ -26,7 +23,7 @@ const MovieScreen = ({ history, match }) => {
   const { loading, error, movie } = movieDetails;
 
   // useEffect: This runs as soon as the component loads
-  useEffect(() => {    
+  useEffect(() => {
     dispatch(listMovieDetails(movieId));
     return () => {
       dispatch(cleanUpMoviesState());
@@ -42,31 +39,33 @@ const MovieScreen = ({ history, match }) => {
       <Link className="btn btn-light my-3" to="/">
         Go back
       </Link>
-      {loading ? (
+      {loading || movie.info === undefined ? (
         <Loader />
       ) : error ? (
         <Message variant="danger">{error}</Message>
       ) : (
         <Row>
-          <Col md={6}>
+          <Col md={4}>
             <Image fluid src={movie.info.Poster} alt={movie.info.Title} />
           </Col>
           <Col md={3}>
             <ListGroup variant="flush">
               <ListGroup.Item>
-                <h3>{movie.name}</h3>
+                <h3>{movie.info.Title}</h3>
               </ListGroup.Item>
               <ListGroup.Item>
-                <Rating
-                  value={movie.rating}
-                  text={`${movie.numReviews} reviews`}
-                  color="black"
-                />
+                {movie.info.Ratings !== undefined &&
+                  movie.info.Ratings.map((rating) => {
+                    return (
+                      <Rating
+                        text={`${rating.Source}: ${rating.Value}`}
+                        color="black"
+                        key={rating.Source}
+                      />
+                    );
+                  })}
               </ListGroup.Item>
-              <ListGroup.Item>Price: ${movie.price}</ListGroup.Item>
-              <ListGroup.Item>
-                Description: {movie.description}
-              </ListGroup.Item>
+              <ListGroup.Item>Description: {movie.info.Plot}</ListGroup.Item>
             </ListGroup>
           </Col>
           <Col md={3}>
@@ -74,21 +73,25 @@ const MovieScreen = ({ history, match }) => {
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <Row>
-                    <Col>Price:</Col>
+                    <Col>Purchase:</Col>
                     <Col>
-                      <strong>${movie.price}</strong>
+                      <strong>{movie.final_price > 0? `$ ${movie.final_price}`:'N/A'}</strong>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>Rent:</Col>
+                    <Col>
+                      <strong>{movie.rent_price > 0? `$ ${movie.rent_price}`:'N/A'}</strong>
                     </Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
                     <Col>Status:</Col>
-                    <Col>
-                      {movie.countInStock > 0 ? "In Stock" : "Out of Stock"}
-                    </Col>
+                    <Col>{movie.stock > 0 ? "In Stock" : "Out of Stock"}</Col>
                   </Row>
                 </ListGroup.Item>
-                {movie.countInStock > 0 && (
+                {movie.stock > 0 && (
                   <ListGroup.Item>
                     <Row>
                       <Col>Qty:</Col>
@@ -98,7 +101,7 @@ const MovieScreen = ({ history, match }) => {
                           value={qty}
                           onChange={(e) => setQty(e.target.value)}
                         >
-                          {[...Array(movie.countInStock).keys()].map((x) => (
+                          {[...Array(movie.stock).keys()].map((x) => (
                             <option key={x + 1} value={x + 1}>
                               {x + 1}
                             </option>
@@ -113,7 +116,7 @@ const MovieScreen = ({ history, match }) => {
                     className="btn-block"
                     type="button"
                     onClick={addToCartHandler}
-                    disabled={movie.countInStock < 1}
+                    disabled={movie.stock < 1}
                   >
                     Add to Cart
                   </Button>

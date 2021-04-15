@@ -84,11 +84,15 @@ class Movie(SoftDeleteModel):
 
     @cached_property
     def highest_price(self):
+        if self.purchases_movements is None:
+            return 0
         price = self.purchases_movements.first().unit_price
         return price if price else 0
 
     @cached_property
     def average_price(self):
+        if self.purchases_movements is None:
+            return 0
         price = self.purchases_movements.aggregate(Avg("unit_price")).get(
             "unit_price__avg", Decimal("0.00")
         )
