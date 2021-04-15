@@ -11,7 +11,7 @@ import {
 export const listMovies = () => async (dispatch) => {
   try {
     dispatch({ type: MOVIE_LIST_REQUEST });
-    const { data } = await axios.get("/api/movies");
+    const { data } = await axios.get("/api/movies/");
     dispatch({ type: MOVIE_LIST_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
@@ -26,8 +26,10 @@ export const listMovies = () => async (dispatch) => {
 
 export const listMovieDetails = (id) => async (dispatch) => {
   try {
-    dispatch({ type: MOVIE_DETAILS_REQUEST });
-    const { data } = await axios.get(`/api/movies/${id}`);
+    console.log("Movie details!")
+    dispatch({ type: MOVIE_DETAILS_REQUEST });    
+    const { data } = await axios.get(`/api/movies/${id}/`);
+    console.log(data)
     dispatch({ type: MOVIE_DETAILS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({

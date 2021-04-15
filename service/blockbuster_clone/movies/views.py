@@ -25,13 +25,13 @@ class MovieViewSet(
     permission_classes = [IsStaff]
 
     def get_serializer_class(self):
-        if self.request.user.is_staff_member:
+        if self.request.user.is_authenticated and self.request.user.is_staff_member:
             return MovieDetailSerializer
         else:
             return MovieSerializer
 
     def get_queryset(self):
-        if self.request.user.is_staff_member:
+        if self.request.user.is_authenticated and self.request.user.is_staff_member:
             return Movie.objects.all()
         else:
             return Movie.objects.filter(info__Error__isnull=True)

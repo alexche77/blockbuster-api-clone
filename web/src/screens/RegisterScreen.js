@@ -11,7 +11,7 @@ const RegisterScreen = ({ location, history }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [message, setMessage] = useState(null);
   const dispatch = useDispatch();
 
@@ -31,7 +31,7 @@ const RegisterScreen = ({ location, history }) => {
       setMessage("Passwords don't match");
     } else {
       setMessage(null);
-      dispatch(register(name, email, password));
+      dispatch(register(username, email, password));
     }
   };
 
@@ -43,13 +43,13 @@ const RegisterScreen = ({ location, history }) => {
         {message && <Message variant="warning"> {message}</Message>}
         {error && <Message variant="danger"> {error}</Message>}
         <Form onSubmit={submitHandler}>
-          <Form.Group controlId="name">
-            <Form.Label>Name</Form.Label>
+          <Form.Group controlId="username">
+            <Form.Label>Username</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             ></Form.Control>
           </Form.Group>
           <Form.Group controlId="email">

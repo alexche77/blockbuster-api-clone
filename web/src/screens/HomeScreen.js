@@ -26,7 +26,7 @@ const HomeScreen = () => {
       ) : (
         <Row>
           {movies.map((movie) => (
-            <Col sm={12} md={6} lg={4} xl={3} key={movie.id}>
+            <Col sm={12} md={6} lg={4} xl={4} key={movie.id}>
               <Product movie={movie} />
             </Col>
           ))}

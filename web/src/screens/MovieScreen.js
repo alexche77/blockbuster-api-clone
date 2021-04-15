@@ -26,7 +26,7 @@ const MovieScreen = ({ history, match }) => {
   const { loading, error, movie } = movieDetails;
 
   // useEffect: This runs as soon as the component loads
-  useEffect(() => {
+  useEffect(() => {    
     dispatch(listMovieDetails(movieId));
     return () => {
       dispatch(cleanUpMoviesState());
@@ -49,7 +49,7 @@ const MovieScreen = ({ history, match }) => {
       ) : (
         <Row>
           <Col md={6}>
-            <Image fluid src={movie.image} alt={movie.name} />
+            <Image fluid src={movie.info.Poster} alt={movie.info.Title} />
           </Col>
           <Col md={3}>
             <ListGroup variant="flush">
