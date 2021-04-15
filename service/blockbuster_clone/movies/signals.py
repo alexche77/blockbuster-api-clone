@@ -1,10 +1,11 @@
+import requests
+from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from blockbuster_clone.movies.models import Movie
-from django.conf import settings
-import requests
 from rest_framework import status
 from structlog import get_logger
+
+from blockbuster_clone.movies.models import Movie
 
 logger = get_logger()
 
