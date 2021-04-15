@@ -7,7 +7,7 @@ from django.utils.functional import cached_property
 from django_softdelete.models import SoftDeleteModel
 from structlog import get_logger
 
-from blockbuster_clone.store.models import Movement
+from blockbuster_clone.store.models import Order
 
 logger = get_logger()
 
@@ -76,13 +76,20 @@ class Movie(SoftDeleteModel):
         return price if price else 0
 
     @cached_property
+    def purchases_movements(self):
+        return self.movement_set.filter(
+            order__order_type=Order.OrderType.PURCHASE,
+            order__order_state=Order.OrderState.ACCEPTED,
+        )
+
+    @cached_property
     def highest_price(self):
-        price = self.movement_set.order_by("-unit_price").first().unit_price
+        price = self.purchases_movements.first().unit_price
         return price if price else 0
 
     @cached_property
     def average_price(self):
-        price = self.movement_set.aggregate(Avg("unit_price")).get(
+        price = self.purchases_movements.aggregate(Avg("unit_price")).get(
             "unit_price__avg", Decimal("0.00")
         )
 
@@ -91,7 +98,7 @@ class Movie(SoftDeleteModel):
     @cached_property
     def sales(self):
         count = (
-            self.movement_set.filter(movement_type=Movement.MovementType.SALE)
+            self.movement_set.filter(order__order_type=Order.OrderType.SALE)
             .aggregate(Sum("quantity"))
             .get("quantity__sum", 0)
         )
@@ -100,7 +107,7 @@ class Movie(SoftDeleteModel):
     @cached_property
     def rents(self):
         count = (
-            self.movement_set.filter(movement_type=Movement.MovementType.RENT)
+            self.movement_set.filter(order__order_type=Order.OrderType.RENT)
             .aggregate(Sum("quantity"))
             .get("quantity__sum", 0)
         )
@@ -109,7 +116,7 @@ class Movie(SoftDeleteModel):
     @cached_property
     def rent_returns(self):
         count = (
-            self.movement_set.filter(movement_type=Movement.MovementType.RENT_RETURN)
+            self.movement_set.filter(order__order_type=Order.OrderType.RENT_RETURN)
             .aggregate(Sum("quantity"))
             .get("quantity__sum", 0)
         )
@@ -118,9 +125,7 @@ class Movie(SoftDeleteModel):
     @cached_property
     def defective_returns(self):
         count = (
-            self.movement_set.filter(
-                movement_type=Movement.MovementType.DEFECTIVE_RETURN
-            )
+            self.movement_set.filter(order__order_type=Order.OrderType.DEFECTIVE_RETURN)
             .aggregate(Sum("quantity"))
             .get("quantity__sum", 0)
         )
@@ -128,17 +133,15 @@ class Movie(SoftDeleteModel):
 
     @cached_property
     def purchases(self):
-        count = (
-            self.movement_set.filter(movement_type=Movement.MovementType.PURCHASE)
-            .aggregate(Sum("quantity"))
-            .get("quantity__sum", 0)
+        count = self.purchases_movements.aggregate(Sum("quantity")).get(
+            "quantity__sum", 0
         )
         return count if count else 0
 
     @cached_property
     def adjustments_add(self):
         count = (
-            self.movement_set.filter(movement_type=Movement.MovementType.ADJUSTMENT_ADD)
+            self.movement_set.filter(order__order_type=Order.OrderType.ADJUSTMENT_ADD)
             .aggregate(Sum("quantity"))
             .get("quantity__sum", 0)
         )
@@ -148,7 +151,7 @@ class Movie(SoftDeleteModel):
     def adjustments_remove(self):
         count = (
             self.movement_set.filter(
-                movement_type=Movement.MovementType.ADJUSTMENT_REMOVE
+                order__order_type=Order.OrderType.ADJUSTMENT_REMOVE
             )
             .aggregate(Sum("quantity"))
             .get("quantity__sum", 0)

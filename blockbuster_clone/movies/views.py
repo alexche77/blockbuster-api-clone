@@ -22,7 +22,6 @@ class MovieViewSet(
     GenericViewSet,
 ):
     queryset = Movie.objects.all()
-    lookup_field = "imdb_id"
     permission_classes = [IsStaff]
 
     def get_serializer_class(self):
@@ -32,9 +31,6 @@ class MovieViewSet(
             return MovieSerializer
 
     def get_queryset(self):
-        logger.debug(
-            "MoviesList", data={"is_staff_member": self.request.user.is_staff_member}
-        )
         if self.request.user.is_staff_member:
             return Movie.objects.all()
         else:

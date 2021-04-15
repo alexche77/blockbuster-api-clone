@@ -12,9 +12,6 @@ class Order(models.Model):
         PENDING_REVIEW = 1, "PENDING_REVIEW"
         REJECTED = 2, "REJECTED"
         ACCEPTED = 3, "ACCEPTED"
-        DEFECTIVE_RETURN = 4, "DEFECTIVE_RETURN"
-        PURCHASE = 5, "PURCHASE"
-        ADJUSTMENT = 6, "ADJUSTMENT"
 
     class OrderType(models.IntegerChoices):
         SALE = 1, "SALE"
@@ -51,20 +48,18 @@ class Movement(models.Model):
     movie = models.ForeignKey("movies.Movie", on_delete=models.PROTECT)
     order = models.ForeignKey(Order, related_name="movements", on_delete=models.PROTECT)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
-    quantity = models.IntegerField(default=1)
+    quantity = models.IntegerField(blank=False)
     comments = models.CharField(max_length=255, default=None, blank=True, null=True)
     price = models.DecimalField(
         max_digits=5,
         decimal_places=2,
         blank=False,
-        default=Decimal("0.00"),
         validators=[MinValueValidator(Decimal("0.00"))],
     )
     unit_price = models.DecimalField(
         max_digits=5,
         decimal_places=2,
         blank=False,
-        default=Decimal("0.00"),
         validators=[MinValueValidator(Decimal("0.00"))],
     )
     created_at = models.DateTimeField(auto_now_add=True)
