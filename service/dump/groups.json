@@ -1,1 +1,0 @@
-[{"model":"auth.group","pk":1,"fields":{"name":"Admins","permissions":[]}},{"model":"auth.group","pk":2,"fields":{"name":"Staff","permissions":[]}}]
