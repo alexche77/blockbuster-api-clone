@@ -11,8 +11,8 @@ urlpatterns = [
 # API URLS
 urlpatterns += [
     # API base url
-    path("auth/", include("djoser.urls")),
-    path("auth/", include("djoser.urls.authtoken")),
+    path("api/auth/", include("djoser.urls")),
+    path("api/auth/", include("djoser.urls.authtoken")),
     path("api/", include("config.api_router")),
 ]
 
