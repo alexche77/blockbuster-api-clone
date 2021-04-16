@@ -13,9 +13,6 @@ import {
   USER_UPDATE_PROFILE_SUCCESS,
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_RESET,
-  USER_GROUP_FAIL,
-  USER_GROUP_SUCCESS,
-  USER_GROUP_REQUEST,
   USER_LIST_REQUEST,
   USER_LIST_SUCCESS,
   USER_LIST_FAIL,
@@ -186,7 +183,7 @@ export const setUserGroup = (user, group) => async (dispatch,getState) => {
         Authorization: `Token ${userInfo.auth_token}`,
       },
     };
-    const { data } = await axios.post(
+    await axios.post(
       `/api/users/${user.username}/groups/`,
       { group },
       config
