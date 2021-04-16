@@ -15,19 +15,18 @@ const Header = () => {
     <header>
       <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect fixed="top">
         <Container>
-          <LinkContainer to="/">
-            <Navbar.Brand>BlockBuster</Navbar.Brand>
-          </LinkContainer>
+          <Navbar.Brand>BlockBuster</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
-              {userInfo && userInfo.groups.length > 0 && (
-                <>
-                  <LinkContainer to="/movies">
-                    <Nav.Link>
-                      <i className="fas fa-film"></i> Movies
+              <LinkContainer to="/movies">
+                <Nav.Link>
+                  <i className="fas fa-film"></i> Movies
                     </Nav.Link>
-                  </LinkContainer>
+              </LinkContainer>
+              {(userInfo && userInfo.groups !== undefined && userInfo.groups.length > 0) && (
+                <>
+
                   <LinkContainer to="/orders">
                     <Nav.Link>
                       <i className="fas fa-box-open"></i> Orders
@@ -35,7 +34,7 @@ const Header = () => {
                   </LinkContainer>
                 </>
               )}
-              {userInfo && userInfo.groups.includes("Admins") && (
+              {(userInfo && userInfo.groups !== undefined && userInfo.groups.includes("Admins")) && (
                 <LinkContainer to="/users">
                   <Nav.Link>
                     <i className="fas fa-user-tie"></i> Users

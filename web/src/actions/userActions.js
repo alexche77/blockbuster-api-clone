@@ -38,14 +38,12 @@ export const login = (username, password) => async (dispatch) => {
     config = {
       headers: {
         "Content-Type": "Application/json",
-        Authorization: `Token ${auth_token}`,
+        'Authorization': `Token ${auth_token}`,
       },
     };
 
     const { data } = await axios.get(`/api/users/me`, config);
     const payload = { auth_token, ...data };
-    console.log(payload);
-    console.log(data);
     localStorage.setItem("userInfo", JSON.stringify(payload));
     dispatch({
       type: USER_LOGIN_SUCCESS,
@@ -74,22 +72,37 @@ export const register = (username, email, password) => async (dispatch) => {
     dispatch({
       type: USER_REGISTER_REQUEST,
     });
-    const config = {
+    let config = {
       headers: {
         "Content-Type": "Application/json",
       },
     };
 
-    const { data } = await axios.post(
+    let { data } = await axios.post(
       "/auth/users/",
       { username, email, password },
       config
     );
+
+    const response = await axios.post(
+      "/auth/token/login/",
+      { username, password },
+      config
+    );
+    let auth_token = response.data.auth_token;
+    config = {
+      headers: {
+        "Content-Type": "Application/json",
+        "Authorization": `Token ${auth_token}`,
+      },
+    };
+
+    const payload = { auth_token, ...data };
+    localStorage.setItem("userInfo", JSON.stringify(payload));
     dispatch({
       type: USER_REGISTER_SUCCESS,
       payload: data,
     });
-
     dispatch({
       type: USER_LOGIN_SUCCESS,
       payload: data,
@@ -171,7 +184,7 @@ export const getUsers = () => async (dispatch, getState) => {
   }
 };
 
-export const setUserGroup = (user, group) => async (dispatch,getState) => {
+export const setUserGroup = (user, group) => async (dispatch, getState) => {
   try {
     const {
       userLogin: { userInfo },

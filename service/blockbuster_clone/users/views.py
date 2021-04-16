@@ -28,6 +28,8 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
     @action(detail=True, methods=["POST"])
     def groups(self, request, username=None):
         user: User = self.get_object()
+        if user == request.user:
+            raise ValidationError(detail={"detail": "You cannot change your assigned groups"})
         if "group" not in request.data:
             raise ValidationError(detail={"group": "This field is required"})
         group_name = request.data["group"]
