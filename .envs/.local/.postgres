@@ -1,0 +1,8 @@
+
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=blockbuster_clone
+POSTGRES_USER=debug
+POSTGRES_PASSWORD=debug
