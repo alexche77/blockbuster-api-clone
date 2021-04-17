@@ -66,3 +66,6 @@ class Movement(models.Model):
 
     def __str__(self):
         return f"{self.movie} - {self.order}"
+
+    class Meta:
+        unique_together = ["movie", "order"]
