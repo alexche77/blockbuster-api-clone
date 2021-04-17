@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.utils.functional import cached_property
 
 from blockbuster_clone.users.models import User
 
@@ -32,22 +33,20 @@ class Order(models.Model):
         choices=OrderState.choices, default=OrderState.DRAFT, blank=False
     )
 
-    def get_type(self):
+    @cached_property
+    def type_label(self):
         return self.OrderType(self.order_type).label
 
-    def get_state(self):
+    def state_label(self):
         return self.OrderState(self.order_state).label
 
     def __str__(self):
-        return (
-            f"# {self.pk} - {self.get_type()} - {self.get_state()} - {self.created_by}"
-        )
+        return f"# {self.pk} - {self.order_type_label()} - {self.state_label()} - {self.created_by}"
 
 
 class Movement(models.Model):
     movie = models.ForeignKey("movies.Movie", on_delete=models.PROTECT)
     order = models.ForeignKey(Order, related_name="movements", on_delete=models.PROTECT)
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
     quantity = models.IntegerField(blank=False)
     comments = models.CharField(max_length=255, default=None, blank=True, null=True)
     price = models.DecimalField(

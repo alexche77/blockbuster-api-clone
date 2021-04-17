@@ -13,6 +13,9 @@ User = get_user_model()
 class OrderSerializer(serializers.ModelSerializer):
     created_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
+    type_label = serializers.ReadOnlyField()
+    state_label = serializers.ReadOnlyField()
+
     class Meta:
         fields = "__all__"
         model = Order

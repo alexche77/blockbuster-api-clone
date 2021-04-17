@@ -33,7 +33,9 @@ class OrderViewSet(
 
     def create(self, request, *args, **kwargs):
         is_staff = request.user.is_staff_member
-        is_public_order_type = request.data["order_type"] in [
+        is_public_order_type = "order_type" in request.data and request.data[
+            "order_type"
+        ] in [
             Order.OrderType.SALE,
             Order.OrderType.RENT,
             Order.OrderType.RENT_RETURN,
@@ -43,6 +45,8 @@ class OrderViewSet(
             "OrderViewSet::create",
             data={"is_public_order_type": is_public_order_type, "is_staff": is_staff},
         )
+        if is_staff and "order_type" not in request.data:
+            request.data["order_type"] = Order.OrderType.PURCHASE
         if not is_public_order_type and not is_staff:
             raise PermissionDenied("Operation not permitted")
         return super(OrderViewSet, self).create(request, *args, **kwargs)
