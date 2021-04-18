@@ -35,5 +35,5 @@ class MovementSerializer(serializers.ModelSerializer):
         return self.context["request"].user
 
     class Meta:
-        exclude = ["unit_price"]
+        fields = "__all__"
         model = Movement

@@ -8,7 +8,7 @@ logger = get_logger()
 
 class IsStaffOrSelf(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        return obj.user == request.user or request.user.is_staff_member
+        return obj.order.created_by == request.user or request.user.is_staff_member
 
 
 class IsStaffOrOrderPublic(permissions.BasePermission):

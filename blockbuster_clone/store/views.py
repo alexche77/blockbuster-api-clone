@@ -65,7 +65,7 @@ class OrderViewSet(
             logger.debug(
                 "OrderMovements",
                 data={
-                    "movements": order.movements.all(),
+                    "movements": order.movements.prefetch_related("movie").all(),
                     "serialized": movements_serializer.data,
                 },
             )
@@ -85,10 +85,7 @@ class OrderViewSet(
                 data["price"] = movie.final_price
             elif order.order_type == Order.OrderType.RENT:
                 data["price"] = movie.rent_price
-            logger.debug("MovementSerializer", data=data)
-            m = Movement.objects.create(
-                **data, order=order, unit_price=data["price"] / data["quantity"]
-            )
+            m = Movement.objects.create(**data, order=order)
             return Response(MovementSerializer(m).data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -102,6 +99,7 @@ class MovementViewSet(
     DestroyModelMixin,
     GenericViewSet,
 ):
+    pagination_class = None
     queryset = Movement.objects.all()
     serializer_class = MovementSerializer
     permission_classes = [IsStaffOrSelf]
@@ -110,4 +108,4 @@ class MovementViewSet(
         if self.request.user.is_staff_member:
             return Movement.objects.all()
         else:
-            return Movement.objects.filter(user=self.request.user)
+            return Movement.objects.filter(order__created_by=self.request.user)

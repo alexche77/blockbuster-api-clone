@@ -42,9 +42,7 @@ class Order(models.Model):
         return self.OrderState(self.order_state).label
 
     def __str__(self):
-        return (
-            f"# {self.pk} - {self.type_label} - {self.state_label} - {self.created_by}"
-        )
+        return f"# {self.pk} - {self.type_label} - {self.state_label}"
 
     class Meta:
         ordering = ["-updated_at"]
@@ -52,7 +50,7 @@ class Order(models.Model):
 
 class Movement(models.Model):
     movie = models.ForeignKey("movies.Movie", on_delete=models.PROTECT)
-    order = models.ForeignKey(Order, related_name="movements", on_delete=models.PROTECT)
+    order = models.ForeignKey(Order, related_name="movements", on_delete=models.CASCADE)
     quantity = models.IntegerField(blank=False)
     comments = models.CharField(max_length=255, default=None, blank=True, null=True)
     price = models.DecimalField(
