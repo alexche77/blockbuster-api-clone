@@ -29,7 +29,7 @@ class MovieViewSet(
     CreateModelMixin,
     GenericViewSet,
 ):
-    queryset = Movie.objects.all()
+    queryset = Movie.objects.exclude(info__has_key="Error").all()
     permission_classes = [IsStaff]
     lookup_field = "imdb_id"
 
@@ -38,12 +38,6 @@ class MovieViewSet(
             return MovieDetailSerializer
         else:
             return MovieSerializer
-
-    def get_queryset(self):
-        if self.request.user.is_authenticated and self.request.user.is_staff_member:
-            return Movie.objects.all()
-        else:
-            return Movie.objects.filter(info__Error__isnull=True)
 
     def retrieve(self, request, imdb_id=None):
         try:
