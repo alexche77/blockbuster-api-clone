@@ -10,7 +10,7 @@ from blockbuster_clone.users.models import User
 class Order(models.Model):
     class OrderState(models.IntegerChoices):
         DRAFT = 0, "DRAFT"
-        PENDING_REVIEW = 1, "PENDING_REVIEW"
+        PENDING_REVIEW = 1, "PENDING REVIEW"
         REJECTED = 2, "REJECTED"
         ACCEPTED = 3, "ACCEPTED"
 
@@ -18,10 +18,10 @@ class Order(models.Model):
         SALE = 1, "SALE"
         RENT = 2, "RENT"
         RENT_RETURN = 3, "RENT_RETURN"
-        DEFECTIVE_RETURN = 4, "DEFECTIVE_RETURN"
+        DEFECTIVE_RETURN = 4, "DEFECTIVE RETURN"
         PURCHASE = 5, "PURCHASE"
-        ADJUSTMENT_ADD = 6, "ADJUSTMENT_ADD"
-        ADJUSTMENT_REMOVE = 7, "ADJUSTMENT_REMOVE"
+        ADJUSTMENT_ADD = 6, "ADJUSTMENT ADD"
+        ADJUSTMENT_REMOVE = 7, "ADJUSTMENT REMOVE"
 
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -42,6 +42,9 @@ class Order(models.Model):
 
     def __str__(self):
         return f"# {self.pk} - {self.order_type_label()} - {self.state_label()} - {self.created_by}"
+
+    class Meta:
+        ordering = ["-updated_at"]
 
 
 class Movement(models.Model):
