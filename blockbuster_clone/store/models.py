@@ -37,11 +37,14 @@ class Order(models.Model):
     def type_label(self):
         return self.OrderType(self.order_type).label
 
+    @cached_property
     def state_label(self):
         return self.OrderState(self.order_state).label
 
     def __str__(self):
-        return f"# {self.pk} - {self.order_type_label()} - {self.state_label()} - {self.created_by}"
+        return (
+            f"# {self.pk} - {self.type_label} - {self.state_label} - {self.created_by}"
+        )
 
     class Meta:
         ordering = ["-updated_at"]
@@ -71,3 +74,4 @@ class Movement(models.Model):
 
     class Meta:
         unique_together = ["movie", "order"]
+        ordering = ["-created_at"]

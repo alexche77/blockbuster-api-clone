@@ -170,6 +170,7 @@ class Movie(SoftDeleteModel):
                 name="unique_if_not_deleted",
             )
         ]
+        ordering = ["-updated_at"]
 
     def __str__(self):
         error = self.info.get("Error", "Pending information")

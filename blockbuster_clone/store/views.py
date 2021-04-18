@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
@@ -75,17 +75,19 @@ class OrderViewSet(
         serializer = MovementSerializer(data=request.data)
         if serializer.is_valid():
             data = serializer.validated_data
-            movie = data["movie"]
+            logger.debug("MovementSerializer", data=data)
+            movie = data["movie_id"]
+            if order.movements.filter(movie=movie).exists():
+                raise ValidationError(
+                    detail={"detail": "Movie is already added to order"}
+                )
             if order.order_type == Order.OrderType.SALE:
                 data["price"] = movie.final_price
             elif order.order_type == Order.OrderType.RENT:
                 data["price"] = movie.rent_price
             logger.debug("MovementSerializer", data=data)
             m = Movement.objects.create(
-                **data,
-                order=order,
-                user=self.request.user,
-                unit_price=data["price"] / data["quantity"]
+                **data, order=order, unit_price=data["price"] / data["quantity"]
             )
             return Response(MovementSerializer(m).data, status=status.HTTP_201_CREATED)
         else:

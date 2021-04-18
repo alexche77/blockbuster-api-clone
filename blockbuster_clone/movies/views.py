@@ -29,9 +29,25 @@ class MovieViewSet(
     CreateModelMixin,
     GenericViewSet,
 ):
-    queryset = Movie.objects.exclude(info__has_key="Error").all()
+    queryset = (
+        Movie.objects.exclude(info__has_key="Error")
+        .prefetch_related("movement_set")
+        .prefetch_related("movement_set__order")
+        .all()
+    )
     permission_classes = [IsStaff]
     lookup_field = "imdb_id"
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = MovieSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = MovieSerializer(queryset, many=True)
+        return Response(serializer.data)
 
     def get_serializer_class(self):
         if self.request.user.is_authenticated and self.request.user.is_staff_member:
