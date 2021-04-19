@@ -1,4 +1,3 @@
-from django.http import Http404
 from rest_framework.exceptions import APIException
 from rest_framework.mixins import (
     CreateModelMixin,
@@ -77,7 +76,7 @@ class MovieViewSet(
         try:
             m = Movie.objects.get(imdb_id=imdb_id)
             if m.is_available is False:
-                raise Http404
+                raise APIException("Movie not available")
         except Movie.DoesNotExist:
             try:
                 service = OmdbApi()
