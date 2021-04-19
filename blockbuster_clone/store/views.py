@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -12,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from structlog import get_logger
 
+from blockbuster_clone.movies.models import Movie
 from blockbuster_clone.store.models import Movement, Order
 from blockbuster_clone.store.permissions import IsStaffOrOrderPublic, IsStaffOrSelf
 from blockbuster_clone.store.serializers import MovementSerializer, OrderSerializer
@@ -43,7 +45,11 @@ class OrderViewSet(
         ]
         logger.debug(
             "OrderViewSet::create",
-            data={"is_public_order_type": is_public_order_type, "is_staff": is_staff},
+            data={
+                "is_public_order_type": is_public_order_type,
+                "is_staff": is_staff,
+                "data": request.data,
+            },
         )
         if is_staff and "order_type" not in request.data:
             request.data["order_type"] = Order.OrderType.PURCHASE
@@ -77,14 +83,15 @@ class OrderViewSet(
             data = serializer.validated_data
             logger.debug("MovementSerializer", data=data)
             movie = data["movie_id"]
+            mov = get_object_or_404(Movie, pk=movie)
             if order.movements.filter(movie=movie).exists():
                 raise ValidationError(
                     detail={"detail": "Movie is already added to order"}
                 )
             if order.order_type == Order.OrderType.SALE:
-                data["price"] = movie.final_price
+                data["price"] = mov.final_price
             elif order.order_type == Order.OrderType.RENT:
-                data["price"] = movie.rent_price
+                data["price"] = mov.rent_price
             m = Movement.objects.create(**data, order=order)
             return Response(MovementSerializer(m).data, status=status.HTTP_201_CREATED)
         else:

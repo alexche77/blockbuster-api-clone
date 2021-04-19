@@ -17,7 +17,12 @@ class MovieSerializer(serializers.Serializer):
     info = serializers.JSONField(read_only=True)
     stock = serializers.IntegerField(default=0, read_only=True)
     profit_percentage = serializers.IntegerField(default=0, read_only=True)
-    final_price = serializers.IntegerField(default=0, read_only=True)
+    final_price = serializers.DecimalField(
+        default=Decimal("0.00"),
+        decimal_places=2,
+        max_digits=5,
+        read_only=True,
+    )
     rent_price = serializers.IntegerField(default=0)
     is_available = serializers.BooleanField(default=False)
 

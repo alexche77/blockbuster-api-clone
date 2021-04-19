@@ -25,7 +25,7 @@ class Movie(models.Model):
     info = models.JSONField("Movie information", blank=True, null=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_available = models.BooleanField(default=True)
+    is_available = models.BooleanField(default=False)
     rent_price = models.DecimalField(
         max_digits=5,
         decimal_places=2,

@@ -1,69 +1,50 @@
 Blockbuster Clone
 =================
 
-Blockbuster Clone
+Technical test:
 
-.. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter
-     :target: https://github.com/pydanny/cookiecutter-django/
-     :alt: Built with Cookiecutter Django
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-     :target: https://github.com/ambv/black
-     :alt: Black code style
+Live URLS
+Backend: https://whispering-beach-73464.herokuapp.com/BMG4hgkb6nTjhU73QLx7skvTyrFg2gyh/
+    Note: Superuser is intended to be used only for developers  (alvaro:alexche77)
+Frontend:https://blockbuster-fe-achvz.herokuapp.com/
 
-:License: MIT
+Repositories:
 
-Settings
---------
+BackendL https://github.com/alexche77/blockbuster-api-clone
+Frontend: https://github.com/alexche77/blockbuster-fe-react
 
-Moved to settings_.
+Requirements
+--------------
 
-.. _settings: http://cookiecutter-django.readthedocs.io/en/latest/settings.html
 
-Basic Commands
+[OK]Only users with admin role are allowed to perform the following actions:
+[OK]Add a movie
+[OK]Modify a movie
+[OK]Remove a movie (Mark it as unavailable)
+[OK]Delete a movie (SoftDelete via availability)
+[OK]Movies must have a title, description, at least one image, stock, rental price, sale price and availability. (Information from movie is pulled from an external service and stored in our database)
+[OK]Availability is a field of movies, which may only be modified by an admin role.
+[NOT_IMPL]Save a log of the title, rental price and sale price updates for a movie.
+[PARTIALLY]Users can rent and buy a movie. For renting functionality you must keep track when the user have to return the movie and apply a monetary penalty if there is a delay. (Penalty to be implemented)
+[OK]Keep a log of all rentals and purchases (who bought, how many, when). (Implemented as Orders and movements)
+[NOT_IMPL]Users can like movies.
+[PARTIALLY]As an admin I’m able to see all movies and filtering by availability/unavailability.
+[OK]As an user I’m able to see only the available movies for renting or buying.
+[NOT_IMPL]The list must be sortable by title (default), and by popularity (likes).
+[OK]The list must have pagination functionality.
+[NOT_IMPL]Search through the movies by name.
+
+Commands and usage
 --------------
 
 Setting Up Your Users
 ^^^^^^^^^^^^^^^^^^^^^
 
-* To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
+* To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit you are good to go, automatically logged in
 
 * To create an **superuser account**, use this command::
 
-    $ python manage.py createsuperuser
-
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
-
-Type checks
-^^^^^^^^^^^
-
-Running type checks with mypy:
-
-::
-
-  $ mypy blockbuster_clone
-
-Test coverage
-^^^^^^^^^^^^^
-
-To run the tests, check your test coverage, and generate an HTML coverage report::
-
-    $ coverage run -m pytest
-    $ coverage html
-    $ open htmlcov/index.html
-
-Running tests with py.test
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-::
-
-  $ pytest
-
-Live reloading and Sass CSS compilation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Moved to `Live reloading and SASS compilation`_.
-
-.. _`Live reloading and SASS compilation`: http://cookiecutter-django.readthedocs.io/en/latest/live-reloading-and-sass-compilation.html
+    $ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 
 Celery
 ^^^^^^
@@ -79,17 +60,6 @@ To run a celery worker:
 
 Please note: For Celery's import magic to work, it is important *where* the celery commands are run. If you are in the same folder with *manage.py*, you should be right.
 
-Email Server
-^^^^^^^^^^^^
-
-In development, it is often nice to be able to see emails that are being sent from your application. For that reason local SMTP server `MailHog`_ with a web interface is available as docker container.
-
-Container mailhog will start automatically when you will run all docker containers.
-Please check `cookiecutter-django Docker documentation`_ for more details how to start all containers.
-
-With MailHog running, to view messages that are sent by your application, open your browser and go to ``http://127.0.0.1:8025``
-.. _mailhog: https://github.com/mailhog/MailHog
-
 Deployment
 ----------
 
@@ -101,10 +71,3 @@ Heroku
 See detailed `cookiecutter-django Heroku documentation`_.
 
 .. _`cookiecutter-django Heroku documentation`: http://cookiecutter-django.readthedocs.io/en/latest/deployment-on-heroku.html
-
-Docker
-^^^^^^
-
-See detailed `cookiecutter-django Docker documentation`_.
-
-.. _`cookiecutter-django Docker documentation`: http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html

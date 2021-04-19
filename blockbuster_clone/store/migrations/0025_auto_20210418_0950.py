@@ -7,31 +7,54 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('store', '0024_remove_movement_user'),
+        ("store", "0024_remove_movement_user"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='movement',
-            options={'ordering': ['-created_at']},
+            name="movement",
+            options={"ordering": ["-created_at"]},
         ),
         migrations.AlterModelOptions(
-            name='order',
-            options={'ordering': ['-updated_at']},
+            name="order",
+            options={"ordering": ["-updated_at"]},
         ),
         migrations.AlterField(
-            model_name='movement',
-            name='order',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='movements', to='store.order'),
+            model_name="movement",
+            name="order",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="movements",
+                to="store.order",
+            ),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='order_state',
-            field=models.IntegerField(choices=[(0, 'DRAFT'), (1, 'PENDING REVIEW'), (2, 'REJECTED'), (3, 'ACCEPTED')], default=0),
+            model_name="order",
+            name="order_state",
+            field=models.IntegerField(
+                choices=[
+                    (0, "DRAFT"),
+                    (1, "PENDING REVIEW"),
+                    (2, "REJECTED"),
+                    (3, "ACCEPTED"),
+                ],
+                default=0,
+            ),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='order_type',
-            field=models.IntegerField(choices=[(1, 'SALE'), (2, 'RENT'), (3, 'RENT_RETURN'), (4, 'DEFECTIVE RETURN'), (5, 'PURCHASE'), (6, 'ADJUSTMENT ADD'), (7, 'ADJUSTMENT REMOVE')], default=1),
+            model_name="order",
+            name="order_type",
+            field=models.IntegerField(
+                choices=[
+                    (1, "SALE"),
+                    (2, "RENT"),
+                    (3, "RENT_RETURN"),
+                    (4, "DEFECTIVE RETURN"),
+                    (5, "PURCHASE"),
+                    (6, "ADJUSTMENT ADD"),
+                    (7, "ADJUSTMENT REMOVE"),
+                ],
+                default=1,
+            ),
         ),
     ]

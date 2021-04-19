@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework.exceptions import APIException
 from rest_framework.mixins import (
     CreateModelMixin,
@@ -31,12 +32,29 @@ class MovieViewSet(
 ):
     queryset = (
         Movie.objects.exclude(info__has_key="Error")
+        .exclude(is_available=True)
         .prefetch_related("movement_set")
         .prefetch_related("movement_set__order")
         .all()
     )
     permission_classes = [IsStaff]
     lookup_field = "imdb_id"
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated and self.request.user.is_staff_member:
+            return (
+                Movie.objects.exclude(info__has_key="Error")
+                .prefetch_related("movement_set")
+                .prefetch_related("movement_set__order")
+                .all()
+            )
+        return (
+            Movie.objects.exclude(info__has_key="Error")
+            .exclude(is_available=False)
+            .prefetch_related("movement_set")
+            .prefetch_related("movement_set__order")
+            .all()
+        )
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -58,6 +76,8 @@ class MovieViewSet(
     def retrieve(self, request, imdb_id=None):
         try:
             m = Movie.objects.get(imdb_id=imdb_id)
+            if m.is_available is False:
+                raise Http404
         except Movie.DoesNotExist:
             try:
                 service = OmdbApi()

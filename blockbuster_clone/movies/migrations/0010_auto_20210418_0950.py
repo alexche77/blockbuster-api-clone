@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('movies', '0009_remove_movie_movements'),
+        ("movies", "0009_remove_movie_movements"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='movie',
-            options={'ordering': ['-updated_at']},
+            name="movie",
+            options={"ordering": ["-updated_at"]},
         ),
     ]
