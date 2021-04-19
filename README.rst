@@ -20,37 +20,66 @@ Requirements
 
 
 [OK]Only users with admin role are allowed to perform the following actions:
+
 [OK]Add a movie
+
 [OK]Modify a movie
+
 [OK]Remove a movie (Mark it as unavailable)
+
 [OK]Delete a movie (SoftDelete via availability)
+
 [OK]Movies must have a title, description, at least one image, stock, rental price, sale price and availability. (Information from movie is pulled from an external service and stored in our database)
+
 [OK]Availability is a field of movies, which may only be modified by an admin role.
+
 [NOT_IMPL]Save a log of the title, rental price and sale price updates for a movie.
+
 [PARTIALLY]Users can rent and buy a movie. For renting functionality you must keep track when the user have to return the movie and apply a monetary penalty if there is a delay. (Penalty to be implemented)
+
 [OK]Keep a log of all rentals and purchases (who bought, how many, when). (Implemented as Orders and movements)
+
 [NOT_IMPL]Users can like movies.
+
 [PARTIALLY]As an admin I’m able to see all movies and filtering by availability/unavailability.
+
 [OK]As an user I’m able to see only the available movies for renting or buying.
+
 [NOT_IMPL]The list must be sortable by title (default), and by popularity (likes).
+
 [OK]The list must have pagination functionality.
+
 [NOT_IMPL]Search through the movies by name.
+
 
 
 Security requirements
 [OK]Add login/logout functionality.Preferably JWT.
+
 [OK]Only admins can add/modify/remove movies.
+
 [OK]Only logged in users can rent and buy movies.
+
 [OK]Only logged in users can like movies.
+
 [OK]Everyone (authenticated or not) can get the list of movies.
+
 [OK]Everyone (authenticated or not) can get the detail of a movie.
+
 [OK]Publish your work using heroku and share the link with us.
+
 Extra credit
+
 [NOT_IMPL]Recovery and forgot password functionality (send email).
+
 [NOT_IMPL]Confirming account (send email)
+
 [OK]Build a small frontend app and connecting to the API. (TBH, it was not that small jaja)
+
 [OK]As an user with admin role I want to be able to change the role of any user.
+
 [NOT_IMPL]Unit test, at least 80% of coverage.
+
 [OK]Include a docker file for production deployments.
 
 
@@ -67,19 +96,16 @@ Setting Up Your Users
 
     $ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 
-Celery
+Running locally
 ^^^^^^
 
-This app comes with Celery.
-
-To run a celery worker:
+To run locally:
 
 .. code-block:: bash
 
-    cd blockbuster_clone
+    docker-compose -f local.yml up
     celery -A config.celery_app worker -l info
 
-Please note: For Celery's import magic to work, it is important *where* the celery commands are run. If you are in the same folder with *manage.py*, you should be right.
 
 Deployment
 ----------
