@@ -96,6 +96,11 @@ Setting Up Your Users
 
     $ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 
+Setting up groups.
+
+docker-compose -f local.yml run --rm django python manage.py loaddata dump/groups.json
+
+
 Running locally
 ^^^^^^
 
