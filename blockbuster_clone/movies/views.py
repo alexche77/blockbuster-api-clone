@@ -75,8 +75,6 @@ class MovieViewSet(
     def retrieve(self, request, imdb_id=None):
         try:
             m = Movie.objects.get(imdb_id=imdb_id)
-            if m.is_available is False:
-                raise APIException("Movie not available")
         except Movie.DoesNotExist:
             try:
                 service = OmdbApi()
