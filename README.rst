@@ -33,7 +33,7 @@ Requirements
 
 [OK]Availability is a field of movies, which may only be modified by an admin role.
 
-[NOT_IMPL]Save a log of the title, rental price and sale price updates for a movie.
+[PARTIALLY]Save a log of the title, rental price and sale price updates for a movie. (Prices are stored as movements in orders, so I shoudl be able to track how the prices of a movie have changed)
 
 [PARTIALLY]Users can rent and buy a movie. For renting functionality you must keep track when the user have to return the movie and apply a monetary penalty if there is a delay. (Penalty to be implemented)
 
